@@ -31,4 +31,4 @@ class Venta_Producto(models.Model):
     creado_en = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.venta_id
+        return f"{self.producto_id} x {self.cantidad} en venta #{self.venta_id.pk}"

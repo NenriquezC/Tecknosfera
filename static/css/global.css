@@ -1,0 +1,83 @@
+/* Fondo detrás (si tienes un wrapper o container general) */
+.container-app {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-left: 225px;
+    margin-top: 70px;
+    min-height: calc(100vh - 70px);
+    background: #f9fafc;
+}
+
+/* Contenedor principal del inventario */
+.inventario-box {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 18px rgba(9,64,103,0.13);
+    padding: 38px 44px 38px 44px;
+    margin: 60px auto 0 auto;
+    width: 1150px;      /* ¡Más ancho! */
+    min-width: 980px;
+    max-width: 96vw;
+    display: block;
+    transition: width 0.2s;
+}
+
+/* Tabla */
+.tabla-lista {
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 18px rgba(9,64,103,0.10);
+    font-size: 1rem;
+    margin: 22px auto;
+    width: 100%;       /* Ocupa el ancho del contenedor */
+    min-width: 980px;  /* Más ancho */
+    max-width: 100%;
+}
+
+.tabla-lista th, .tabla-lista td {
+    padding: 16px 20px; /* Más espacio entre columnas y filas */
+    text-align: left;
+}
+
+.tabla-lista th {
+    background: #094067;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.06rem;
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid #3da9fc;
+}
+
+.tabla-lista tbody tr:nth-child(odd) {
+    background: #f2f6fc;
+}
+
+.tabla-lista tbody tr:nth-child(even) {
+    background: #e9f2fa;
+}
+
+.tabla-lista tbody tr:hover {
+    background: #d1e8fa;
+    transition: 0.18s background;
+}
+
+.tabla-lista td {
+    color: #5f6c7b;
+    border: none;
+    font-weight: 400;
+}
+
+.tabla-lista td a {
+    color: #3da9fc;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.15s;
+}
+.tabla-lista td a:hover {
+    color: #ef4565;
+    text-decoration: underline;
+}

@@ -1,15 +1,134 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <title>Editar Producto</title>
-</head>
-<body>
-    <h1>Editar Producto</h1>
-    <form method="post">
+{% extends "base.html" %}
+
+{% block title %}Editar Producto - Tecknosfera{% endblock %}
+
+{% block extra_head %}
+<style>
+    .form-container {
+        max-width: 430px;
+        margin: 28px auto 0 auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 18px rgba(44,62,80,0.08);
+        padding: 18px 22px 14px 22px;
+        font-size: 0.96rem;
+        border: 1px solid #dfe6e9;
+    }
+    .form-container h2 {
+        margin-top: 4px;
+        margin-bottom: 18px;
+        font-size: 1.17rem;
+        color: #222f3e;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-align: center;
+    }
+    .form-horizontal {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .form-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 2px;
+    }
+    .form-group label {
+        min-width: 115px;
+        font-weight: 500;
+        color: #636e72;
+        font-size: 0.97rem;
+        margin-bottom: 0;
+        text-align: right;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group input[type="email"],
+    .form-group select,
+    .form-group textarea {
+        flex: 1;
+        padding: 5px 8px;
+        border-radius: 6px;
+        border: 1px solid #b2bec3;
+        font-size: 0.96rem;
+        background: #f7fafd;
+        transition: border 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #0984e3;
+        box-shadow: 0 0 0 2px #0984e325;
+        outline: none;
+        background: #fff;
+    }
+    .form-container button[type="submit"] {
+        padding: 8px 0;
+        background: linear-gradient(90deg,#0984e3 60%, #74b9ff 100%);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.07rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        margin-top: 8px;
+        margin-bottom: 0;
+        box-shadow: 0 1px 7px #b2bec3;
+        width: 100%;
+    }
+    .form-container button[type="submit"]:hover {
+        background: linear-gradient(90deg,#74b9ff 0%, #0984e3 100%);
+        color: #222f3e;
+        box-shadow: 0 2px 10px #636e72;
+    }
+    .form-container .cancel-link {
+        display: block;
+        text-align: center;
+        margin: 12px auto 0 auto;
+        font-size: 1rem;
+        color: #0984e3;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+    .form-container .cancel-link:hover {
+        color: #ef4565;
+        text-decoration: underline;
+    }
+    .form-container .errorlist {
+        color: #d63031;
+        font-size: 0.94rem;
+        margin-bottom: 2px;
+        margin-top: 0;
+        list-style: disc inside;
+    }
+    .form-container .errorlist + input,
+    .form-container .errorlist + select,
+    .form-container .errorlist + textarea {
+        border-color: #d63031;
+        background: #fff6f6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Editar Producto</h2>
+    <form method="post" class="form-horizontal">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}
+                <div class="errorlist">{{ field.errors }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
         <button type="submit">Guardar cambios</button>
-        <a href="{% url 'inventario' %}?tabla=productos">Cancelar</a>
     </form>
-</body>
-</html>
+    <a href="{% url 'inventario' %}?tabla=productos" class="cancel-link">Cancelar</a>
+</div>
+{% endblock %}

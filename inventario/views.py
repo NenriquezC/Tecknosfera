@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+#from django.http import HttpResponse
 from .models import Producto, Proveedor
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProductoForm  # Debes tener un form para Producto

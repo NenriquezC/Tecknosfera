@@ -1,0 +1,226 @@
+{% load static %}
+<!--<!DOCTYPE html>-->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Tecknosfera{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- NUEVO: Vincula tu CSS global aquí -->
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <style>
+        :root {
+            --headline: #094067;
+            --paragraph: #5f6c7b;
+            --secondary: #90b4ce;
+            --main: #ffffff;
+            --button: #3da9fc;
+            --highlight: #3da9fc;
+            --tertiary: #ef4565;
+            --stroke: #094067;
+            --sidebar-bg: #094067;
+            --sidebar-link: #fff;
+            --sidebar-link-hover: #3da9fc;
+            --sidebar-title: #3da9fc;
+            --content-bg: #f9fafc;
+            --box-shadow: 0 2px 18px rgba(9,64,103,0.10);
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--content-bg);
+            color: var(--paragraph);
+        }
+        .barra-superior {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: var(--headline);
+            color: var(--main);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+        .barra-superior-logo img.logo {
+            height: 56px;
+            max-width: 150px;
+            vertical-align: middle;
+            margin-right: 16px;
+        }
+        .barra-superior-title {
+            flex: 1 1 auto;
+            text-align: center;
+            color: var(--button);
+            font-size: 2.1rem;
+            font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 225px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-link);
+            min-height: calc(100vh - 70px);
+            box-shadow: 2px 0 8px #09406730;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            padding-top: 28px;
+        }
+        .menu-title {
+            font-size: 17px;
+            font-weight: 600;
+            padding: 8px 24px 6px 18px;
+            color: var(--sidebar-title);
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .menu-list {
+            padding-left: 34px;
+        }
+        .menu-list a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--sidebar-link);
+            background: none;
+            padding: 8px 0;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .menu-list a:hover {
+            background: var(--button);
+            color: var(--headline);
+        }
+        .container-app {
+            margin-left: 225px;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+            background: var(--content-bg);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        main {
+            background: var(--main);
+            border-radius: 18px; /* más redondeado */
+            box-shadow: var(--box-shadow);
+            padding: 48px 52px 48px 52px; /* más espacio */
+            min-height: 60vh;
+            width: 1150px;    /* más ancho */
+            max-width: 95vw;
+            margin: 42px 0 0 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: width 0.2s, padding 0.2s;
+        }
+        main h2, main h1 {
+            color: var(--headline);
+            font-weight: 700;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+        main p, main label {
+            color: var(--paragraph);
+            font-size: 1.08rem;
+            margin-bottom: 12px;
+        }
+        .btn-main {
+            background: var(--button);
+            color: var(--main);
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 10px 28px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #09406720;
+            transition: background 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+        }
+        .btn-main:hover {
+            background: var(--headline);
+            color: var(--main);
+            box-shadow: 0 4px 16px #3da9fc2a;
+        }
+        /* Ejemplo para campos de formulario */
+        input, select, textarea {
+            border: 1.5px solid var(--secondary);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+            font-size: 1rem;
+            background: #fff;
+            transition: border 0.15s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--button);
+            outline: none;
+            background: #f0f8ff;
+        }
+        /* Para los errores */
+        .errorlist {
+            color: var(--tertiary);
+            font-size: 0.97rem;
+            margin-bottom: 5px;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="barra-superior">
+        <div class="barra-superior-logo">
+            <img src="{% static 'img/logo_tecknosfera.jpg' %}" alt="Logo Tecknosfera" class="logo">
+        </div>
+        <div class="barra-superior-title">TECKNOSFERA</div>
+    </div>
+    <div class="sidebar">
+        <div>
+            <div class="menu-title"><i class="fas fa-user-shield"></i> Administración</div>
+            <div class="menu-list">
+                <a href="/admin/"><i class="fas fa-tools"></i> Panel Admin</a>
+            </div>
+            <div class="menu-title"><i class="fas fa-shopping-cart"></i> Compras</div>
+            <div class="menu-list">
+                <a href="/compras/"><i class="fas fa-list"></i> Ver Compras</a>
+                <a href="/producto/agregar/"><i class="fas fa-plus"></i> Agregar Compra</a>
+            </div>
+            <div class="menu-title"><i class="fas fa-cash-register"></i> Ventas</div>
+            <div class="menu-list">
+                <a href="/ventas/"><i class="fas fa-list"></i> Ver Ventas</a>
+                <a href="/ventas/agregar/"><i class="fas fa-plus"></i> Agregar Venta</a>
+            </div>
+            <div class="menu-title"><i class="fas fa-boxes"></i> Inventario</div>
+            <div class="menu-list">
+                <a href="/inventario/"><i class="fas fa-list"></i> Ver Inventario</a>
+                <a href="{% url 'agregar_producto' %}"><i class="fas fa-plus"></i> Agregar Producto</a>
+            </div>
+            <div class="menu-title"><i class="fas fa-chart-bar"></i> Estadísticas</div>
+            <div class="menu-list">
+                <a href="/estadisticas/"><i class="fas fa-list"></i> Ver Estadísticas</a>
+            </div>
+        </div>
+    </div>
+    <div class="container-app">
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+    <footer>
+        <p style="color:var(--paragraph);">by Néstor Enríquez C.</p>
+    </footer>
+</body>
+</html>

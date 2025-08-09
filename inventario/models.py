@@ -37,6 +37,7 @@ class Proveedor(models.Model):
         ('particular', 'Particular')
     ])
     # proveedor = models.ForeignKey('productos.Producto', on_delete=models.CASCADE, related_name='proveedores')
+    rubro = models.CharField(max_length=100, blank=True)
     creado_en = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
