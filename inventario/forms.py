@@ -6,6 +6,8 @@ class ProductoForm(forms.ModelForm): #Hereda de forms.ModelForm, lo que signific
         model = Producto #Le dice al formulario que se base en el modelo Producto.
         fields = '__all__'  # Usará todos los campos de Producto
         #fields = ['nombre', 'categoria', 'precio', 'stock'] se puede cambiar all por esto
+        widgets = { # Define los widgets para los campos del formulario
+            'stock_minimo': forms.NumberInput(attrs={'readonly': 'readonly'}),}
 #El formulario de Proveedores
 class ProveedorForm(forms.ModelForm):
     class Meta:

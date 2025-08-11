@@ -53,7 +53,7 @@ def agregar_producto(request):
     return render(request, 'agregar_producto.html', {'form': form})
 
 
-def editar_producto(request, producto_id):
+""" def editar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     if request.method == 'POST':
         form = ProductoForm(request.POST, instance=producto)
@@ -62,15 +62,56 @@ def editar_producto(request, producto_id):
             return redirect('inventario')
     else:
         form = ProductoForm(instance=producto)
-    return render(request, 'editar_producto.html', {'form': form})
+    return render(request, 'editar_producto.html', {'form': form}) """
+
+def seleccionar_editar_producto(request):
+    productos = Producto.objects.all()
+    return render(request, 'seleccionar_editar_producto.html', {'productos': productos})
 
 
-def eliminar_producto(request, producto_id):
+def editar_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk)
+    if request.method == 'POST':
+        form = ProductoForm(request.POST, instance=producto)
+        if 'recalcular_stock_minimo' in request.POST:
+            # Si el usuario presionó el botón de recalcular
+            if form.is_valid():
+                producto = form.save(commit=False)
+                producto.stock_minimo = int(producto.stock * 0.9)
+                producto.save()
+                return render(request, 'editar_producto.html', {
+                    'form': ProductoForm(instance=producto),
+                    'mensaje': 'Stock mínimo recalculado correctamente.',
+                    'producto': producto
+                })
+        elif form.is_valid():
+            form.save()
+            return redirect('inventario')
+    else:
+        form = ProductoForm(instance=producto)
+    return render(request, 'editar_producto.html', {'form': form, 'producto': producto})
+
+
+
+"""def eliminar_producto(request, producto_id):
     producto = get_object_or_404(Producto, id=producto_id)
     if request.method == 'POST':
         producto.delete()
         return redirect('inventario')
-    return render(request, 'eliminar_producto.html', {'producto': producto})
+    return render(request, 'eliminar_producto.html', {'producto': producto})"""
+
+def eliminar_producto(request, id):
+    producto = get_object_or_404(Producto, pk=id)
+    if request.method == 'POST':
+        producto.delete()
+        return redirect('seleccionar_eliminar_producto')
+    return render(request, 'confirmar_eliminar_producto.html', {'producto': producto})
+
+
+def seleccionar_eliminar_producto(request):
+    buscar = request.GET.get('buscar', '')
+    productos = Producto.objects.filter(nombre__icontains=buscar) if buscar else Producto.objects.all()
+    return render(request, 'seleccionar_eliminar_producto.html', {'productos': productos})
 
 
 def inicio(request):  # para el boton de la pantalla de inicio
@@ -97,6 +138,14 @@ def editar_proveedor(request, proveedor_id):
         form = ProveedorForm(instance=proveedor)
     return render(request, 'editar_proveedor.html', {'form': form})
 
+def seleccionar_editar_proveedor(request):
+    proveedores = Proveedor.objects.all()
+    buscar = request.GET.get('buscar')
+    if buscar:
+        proveedores = proveedores.filter(nombre__icontains=buscar)
+    return render(request, 'seleccionar_editar_proveedor.html', {'proveedores': proveedores})
+
+
 def eliminar_proveedor(request, proveedor_id):
     proveedor = get_object_or_404(Proveedor, id=proveedor_id)
     if request.method == 'POST':
@@ -104,6 +153,13 @@ def eliminar_proveedor(request, proveedor_id):
         return redirect('inventario')
     return render(request, 'eliminar_proveedor.html', {'proveedor': proveedor})
 
-def lista_eliminar_proveedor(request): # creada para eliminar un proveedor de una lista
+def seleccionar_eliminar_proveedor(request):
     proveedores = Proveedor.objects.all()
-    return render(request, "lista_eliminar_proveedor.html", {"proveedores": proveedores})
+    buscar = request.GET.get('buscar', '')
+    if buscar:
+        proveedores = proveedores.filter(nombre__icontains=buscar)
+    return render(request, 'seleccionar_eliminar_proveedor.html', {'proveedores': proveedores})
+
+#def lista_eliminar_proveedor(request): # creada para eliminar un proveedor de una lista
+#    proveedores = Proveedor.objects.all()
+#    return render(request, "lista_eliminar_proveedor.html", {"proveedores": proveedores})
