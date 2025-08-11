@@ -8,94 +8,115 @@
 {% endblock %}
 
 {% block content %}
-<div class="inventario-box">
-    <h2 style="color:#094067; font-weight:700; letter-spacing:1px; text-align:center; margin-bottom:18px;">Inventario</h2>
-    <form method="get" style="text-align:center;margin-bottom:28px;">
-        <label for="tabla" style="font-weight:600;">¿Qué deseas consultar?</label>
-        <select name="tabla" id="tabla" style="margin:0 12px;">
-            <option value="">--- Selecciona ---</option>
-            <option value="productos"{% if opcion == 'productos' %} selected{% endif %}>Productos</option>
-            <option value="proveedores"{% if opcion == 'proveedores' %} selected{% endif %}>Proveedores</option>
-        </select>
-        <button type="submit" style="background:#3da9fc; color:#fff; border:none; border-radius:6px; padding:6px 16px; font-weight:600; cursor:pointer;">Ver</button>
-    </form>
+<div class="inventario-outer">
+    <div class="inventario-box">
+        <h2 style="color:#094067; font-weight:700; letter-spacing:1px; text-align:center; margin-bottom:18px;">Inventario</h2>
+        {% if mensaje %}
+            <div class="mensaje" style="background-color:#e0f7fa; color:#006064; padding:12px; border-radius:6px; margin-bottom:18px;">
+                {{ mensaje }}
+            </div>
+        {% endif %}
+        {% if error %}
+            <div class="error" style="background-color:#ffebee; color:#b71c1c; padding:12px; border-radius:6px; margin-bottom:18px;">
+                {{ error }}
+            </div>
+        {% endif %}
+        {% if opcion %}
+            <h3 style="color:#094067; margin-bottom:14px;">Consultando: {{ opcion|capfirst }}</h3>
+        {% endif %}
+        <form method="get" style="text-align:center;margin-bottom:28px;">
+            <label for="tabla" style="font-weight:600;">¿Qué deseas consultar?</label>
+            <select name="tabla" id="tabla" style="margin:0 12px;">
+                <option value="">--- Selecciona ---</option>
+                <option value="productos"{% if opcion == 'productos' %} selected{% endif %}>Productos</option>
+                <option value="proveedores"{% if opcion == 'proveedores' %} selected{% endif %}>Proveedores</option>
+            </select>
+            <button type="submit" style="background:#3da9fc; color:#fff; border:none; border-radius:6px; padding:6px 16px; font-weight:600; cursor:pointer;">Ver</button>
+        </form>
 
-    {% if opcion == "productos" and productos %}
-        <h3 style="color:#094067; margin-bottom:14px;">Lista de Productos</h3>
-        <a href="{% url 'agregar_producto' %}" style="color:#3da9fc;font-weight:600; margin-bottom:18px; display:inline-block;">Agregar producto</a>
-        <table class="tabla-lista">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripcion</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Stock Minimo</th>
-                    <th>Proveedor</th>
-                    <th>Categoria</th>
-                    <th>Creación</th>
-                    <th>Alerta</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for producto in productos %}
-                <tr>
-                    <td>{{ producto.id }}</td>
-                    <td>{{ producto.nombre }}</td>
-                    <td>{{ producto.descripcion }}</td>
-                    <td>{{ producto.precio }}</td>
-                    <td>{{ producto.stock }}</td>
-                    <td>{{ producto.stock_minimo }}</td>
-                    <td>{{ producto.proveedor }}</td>
-                    <td>{{ producto.categoria }}</td>
-                    <td>{{ producto.creado_en }}</td>
-                    <td>
-                        {% if producto.id in productos_alerta %}
-                            <span style="color:#ef4565; font-weight:bold;">¡Bajo stock! <br>Contactar a proveedor</span>
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{% url 'editar_producto' producto.id %}">Editar</a> |
-                        <a href="{% url 'eliminar_producto' producto.id %}" onclick="return confirm('¿Seguro que quieres eliminar este producto?');">Eliminar</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% elif opcion == "proveedores" and proveedores %}
-        <h3 style="color:#094067; margin-bottom:14px;">Lista de Proveedores</h3>
-        <table class="tabla-lista">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Dirección</th>
-                    <th>Teléfono</th>
-                    <th>Email</th>
-                    <th>Tipo Usuario</th>
-                    <th>Rubro</th>
-                    <th>Creación</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for proveedor in proveedores %}
-                <tr>
-                    <td>{{ proveedor.id }}</td>
-                    <td>{{ proveedor.nombre }}</td>
-                    <td>{{ proveedor.direccion }}</td>
-                    <td>{{ proveedor.telefono }}</td>
-                    <td>{{ proveedor.email }}</td>
-                    <td>{{ proveedor.tipo_usuario }}</td>
-                    <td>{{ proveedor.rubro }}</td>
-                    <td>{{ proveedor.creado_en }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+        {% if opcion == "productos" and productos %}
+            <h3 style="color:#094067; margin-bottom:14px;">Lista de Productos</h3>
+            <a href="{% url 'agregar_producto' %}" style="color:#3da9fc;font-weight:600; margin-bottom:18px; display:inline-block;">Agregar producto</a>
+            <div style="width:100%;overflow-x:auto;">
+            <table class="tabla-lista">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripcion</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Stock Minimo</th>
+                        <th class="hide-mobile">Proveedor</th>
+                        <th>Categoria</th>
+                        <th class="hide-mobile">Creación</th>
+                        <th>Alerta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                        <tr>
+                            <td>{{ producto.id }}</td>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.descripcion }}</td>
+                            <td>{{ producto.precio }}</td>
+                            <td>{{ producto.stock }}</td>
+                            <td>{{ producto.stock_minimo }}</td>
+                            <td class="hide-mobile">{% if producto.proveedor %}{{ producto.proveedor.nombre }}{% endif %}</td>
+                            <td>{{ producto.categoria }}</td>
+                            <td class="hide-mobile">{{ producto.creado_en }}</td>
+                            <td>
+                                -
+                            </td>
+                            <td>
+                                <a href="{% url 'editar_producto' producto.id %}">Editar</a> |
+                                <a href="{% url 'eliminar_producto' producto.id %}" onclick="return confirm('¿Seguro que quieres eliminar este producto?');">Eliminar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        {% elif opcion == "proveedores" and proveedores %}
+            <h3 style="color:#094067; margin-bottom:14px;">Lista de Proveedores</h3>
+            <a href="{% url 'agregar_proveedor' %}" style="color:#3da9fc;font-weight:600; margin-bottom:18px; display:inline-block;">Agregar proveedor</a>
+            <div style="width:100%;overflow-x:auto;">
+            <table class="tabla-lista">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th class="hide-mobile">Dirección</th>
+                        <th>Teléfono</th>
+                        <th class="hide-mobile">Email</th>
+                        <th>Tipo Usuario</th>
+                        <th>Rubro</th>
+                        <th class="hide-mobile">Creación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proveedor in proveedores %}
+                    <tr>
+                        <td>{{ proveedor.id }}</td>
+                        <td>{{ proveedor.nombre }}</td>
+                        <td class="hide-mobile">{{ proveedor.direccion }}</td>
+                        <td>{{ proveedor.telefono }}</td>
+                        <td class="hide-mobile">{{ proveedor.email }}</td>
+                        <td>{{ proveedor.tipo_usuario }}</td>
+                        <td>{{ proveedor.rubro }}</td>
+                        <td class="hide-mobile">{{ proveedor.creado_en }}</td>
+                        <td>
+                            <a href="{% url 'editar_proveedor' proveedor.id %}">Editar</a> |
+                            <a href="{% url 'eliminar_proveedor' proveedor.id %}" onclick="return confirm('¿Seguro que quieres eliminar este proveedor?');">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

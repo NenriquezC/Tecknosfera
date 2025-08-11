@@ -1,55 +1,58 @@
-/* Fondo detrás (si tienes un wrapper o container general) */
-.container-app {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    margin-left: 225px;
-    margin-top: 70px;
-    min-height: calc(100vh - 70px);
-    background: #f9fafc;
-}
+/* ... tu CSS general ... */
 
-/* Contenedor principal del inventario */
 .inventario-box {
+    max-width: 1400px; /* Mucho más ancho */
+    width: 96vw;
+    margin: 0 auto;
     background: #fff;
     border-radius: 18px;
-    box-shadow: 0 2px 18px rgba(9,64,103,0.13);
-    padding: 38px 44px 38px 44px;
-    margin: 60px auto 0 auto;
-    width: 1150px;      /* ¡Más ancho! */
-    min-width: 980px;
-    max-width: 96vw;
-    display: block;
-    transition: width 0.2s;
+    box-shadow: 0 2px 18px rgba(9,64,103,0.10);
+    padding: 48px 32px 38px 32px;
+    min-height: 400px;
 }
 
-/* Tabla */
 .tabla-lista {
     border-collapse: separate;
     border-spacing: 0;
     background: #fff;
     border-radius: 12px;
-    overflow: hidden;
     box-shadow: 0 2px 18px rgba(9,64,103,0.10);
-    font-size: 1rem;
-    margin: 22px auto;
-    width: 100%;       /* Ocupa el ancho del contenedor */
-    min-width: 980px;  /* Más ancho */
+    font-size: 1.03rem;
+    margin: 22px 0;
+    width: 100%;
+    min-width: 1150px;   /* Más ancho */
     max-width: 100%;
+    overflow-x: auto;
+    table-layout: auto;  /* Mostrar todo el contenido, no cortar */
 }
 
-.tabla-lista th, .tabla-lista td {
-    padding: 16px 20px; /* Más espacio entre columnas y filas */
-    text-align: left;
-}
-
+/* Encabezado */
 .tabla-lista th {
     background: #094067;
     color: #fff;
     font-weight: 600;
-    font-size: 1.06rem;
+    font-size: 1.10rem;
     letter-spacing: 0.5px;
     border-bottom: 3px solid #3da9fc;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 18px 18px; /* Más espacio */
+}
+
+/* Filas y celdas */
+.tabla-lista td {
+    color: #5f6c7b;
+    border: none;
+    font-weight: 400;
+    font-size: 1.02rem;
+    padding: 16px 18px; /* Más espacio */
+    white-space: normal;        /* Permite saltos de línea */
+    overflow: visible;          /* No se corta el texto */
+    text-overflow: unset;       /* No se muestra “…” */
+    max-width: none;            /* Sin límite de ancho */
+    vertical-align: middle;
+    word-break: break-word;     /* El texto largo hace salto de línea si es necesario */
 }
 
 .tabla-lista tbody tr:nth-child(odd) {
@@ -65,19 +68,27 @@
     transition: 0.18s background;
 }
 
-.tabla-lista td {
-    color: #5f6c7b;
-    border: none;
-    font-weight: 400;
-}
-
+/* Links en la tabla */
 .tabla-lista td a {
     color: #3da9fc;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.15s;
+    word-break: break-word;
 }
 .tabla-lista td a:hover {
     color: #ef4565;
     text-decoration: underline;
+}
+
+/* Responsive: en pantallas chicas la tabla puede hacer scroll horizontal */
+@media (max-width: 1380px) {
+    .inventario-box {
+        max-width: 99vw;
+        padding: 8vw 1vw 8vw 1vw;
+    }
+    .tabla-lista {
+        min-width: 900px;
+        font-size: 0.97rem;
+    }
 }

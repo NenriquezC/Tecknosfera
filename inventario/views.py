@@ -1,7 +1,7 @@
 #from django.http import HttpResponse
 from .models import Producto, Proveedor
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProductoForm  # Debes tener un form para Producto
+from .forms import ProductoForm, ProveedorForm # Debes tener un form para Producto
 
 
 # Create your views here.
@@ -18,18 +18,20 @@ def inventario(request):
     productos = Producto.objects.all() if opcion == "productos" else None
     proveedores = Proveedor.objects.all() if opcion == "proveedores" else None
 
-    # Procesar productos para el aviso de bajo stock
-    # productos_alerta = []
-    # if productos:
-    #    for p in productos:
-    #        if p.stock_minimo:  # Evita división por cero
-    #            porcentaje = p.stock / p.stock_minimo * 100
-    #            if porcentaje <= 10:
-    #                productos_alerta.append(p.id)  # Guardamos el id para resaltar en la tabla
     productos_alerta = []
+
     if productos:
         for p in productos:
-            if p.stock <= p.stock_minimo:
+            # Calcula el porcentaje del stock respecto al mínimo y lo añade como atributo
+            if p.stock_minimo > 0:
+                porcentaje_stock = (p.stock / p.stock_minimo) * 100
+            else:
+                porcentaje_stock = 100  # Si no hay mínimo, no alertar
+
+            p.porcentaje_stock = porcentaje_stock  # Atributo dinámico
+
+            # Si el stock está al 90% o menos del stock mínimo, alerta
+            if porcentaje_stock <= 90:
                 productos_alerta.append(p.id)
 
     return render(request, "inventario.html", {
@@ -37,7 +39,6 @@ def inventario(request):
         "productos": productos,
         "proveedores": proveedores,
         "productos_alerta": productos_alerta,
-
     })
 
 
@@ -74,3 +75,35 @@ def eliminar_producto(request, producto_id):
 
 def inicio(request):  # para el boton de la pantalla de inicio
     return render(request, 'inicio.html')
+
+def agregar_proveedor(request):
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('inventario')  # Vuelve a la página inventario
+    else:
+        form = ProveedorForm()
+    return render(request, 'agregar_proveedor.html', {'form': form})
+
+def editar_proveedor(request, proveedor_id):
+    proveedor = get_object_or_404(Proveedor, id=proveedor_id)
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST, instance=proveedor)
+        if form.is_valid():
+            form.save()
+            return redirect('inventario')
+    else:
+        form = ProveedorForm(instance=proveedor)
+    return render(request, 'editar_proveedor.html', {'form': form})
+
+def eliminar_proveedor(request, proveedor_id):
+    proveedor = get_object_or_404(Proveedor, id=proveedor_id)
+    if request.method == 'POST':
+        proveedor.delete()
+        return redirect('inventario')
+    return render(request, 'eliminar_proveedor.html', {'proveedor': proveedor})
+
+def lista_eliminar_proveedor(request): # creada para eliminar un proveedor de una lista
+    proveedores = Proveedor.objects.all()
+    return render(request, "lista_eliminar_proveedor.html", {"proveedores": proveedores})

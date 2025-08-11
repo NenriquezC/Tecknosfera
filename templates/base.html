@@ -1,11 +1,9 @@
 {% load static %}
-<!--<!DOCTYPE html>-->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Tecknosfera{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- NUEVO: Vincula tu CSS global aquí -->
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <style>
         :root {
@@ -17,10 +15,10 @@
             --highlight: #3da9fc;
             --tertiary: #ef4565;
             --stroke: #094067;
-            --sidebar-bg: #094067;
-            --sidebar-link: #fff;
+            --sidebar-bg: #f3f3f3;
+            --sidebar-link: #333;
             --sidebar-link-hover: #3da9fc;
-            --sidebar-title: #3da9fc;
+            --sidebar-title: #666;
             --content-bg: #f9fafc;
             --box-shadow: 0 2px 18px rgba(9,64,103,0.10);
         }
@@ -69,38 +67,83 @@
             background: var(--sidebar-bg);
             color: var(--sidebar-link);
             min-height: calc(100vh - 70px);
+            max-height: calc(100vh - 70px);
             box-shadow: 2px 0 8px #09406730;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            padding-top: 28px;
+            padding-top: 18px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #bbb #f3f3f3;
         }
-        .menu-title {
-            font-size: 17px;
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+            background: #f3f3f3;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #bbb;
+            border-radius: 6px;
+        }
+        .menu-section {
+            margin-bottom: 8px;
+        }
+        .menu-dropdown {
+            font-size: 15px;
             font-weight: 600;
-            padding: 8px 24px 6px 18px;
+            padding: 6px 18px 4px 13px;
             color: var(--sidebar-title);
             letter-spacing: 0.5px;
-            margin-bottom: 2px;
+            margin-bottom: 0px;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            transition: background 0.2s;
         }
-        .menu-list {
-            padding-left: 34px;
+        .menu-dropdown::after {
+            content: "▼";
+            position: absolute;
+            right: 16px;
+            font-size: 12px;
+            color: #094067;
+            transition: transform 0.2s;
+        }
+        .menu-section.open .menu-dropdown {
+            background: #e9f2fa;
+            border-radius: 6px;
+        }
+        .menu-section.open .menu-dropdown::after {
+            transform: rotate(180deg);
+        }
+        .dropdown-list {
+            max-height: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            margin-left: 8px;
+            margin-bottom: 2px;
+            padding-left: 8px;
+            transition: max-height 0.33s cubic-bezier(0.4,0,0.2,1);
+        }
+        .menu-section.open .dropdown-list {
+            max-height: 500px; /* suficiente para que se vea todo */
         }
         .menu-list a {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 9px;
             color: var(--sidebar-link);
             background: none;
-            padding: 8px 0;
+            padding: 5px 0;
             text-decoration: none;
-            font-size: 16px;
+            font-size: 15px;
             border-radius: 8px;
             transition: background 0.2s, color 0.2s;
+            margin-bottom: 1px;
         }
         .menu-list a:hover {
             background: var(--button);
-            color: var(--headline);
+            color: var(--main);
         }
         .container-app {
             margin-left: 225px;
@@ -113,11 +156,11 @@
         }
         main {
             background: var(--main);
-            border-radius: 18px; /* más redondeado */
+            border-radius: 18px;
             box-shadow: var(--box-shadow);
-            padding: 48px 52px 48px 52px; /* más espacio */
+            padding: 48px 52px 48px 52px;
             min-height: 60vh;
-            width: 1150px;    /* más ancho */
+            width: 1150px;
             max-width: 95vw;
             margin: 42px 0 0 0;
             text-align: center;
@@ -155,7 +198,6 @@
             color: var(--main);
             box-shadow: 0 4px 16px #3da9fc2a;
         }
-        /* Ejemplo para campos de formulario */
         input, select, textarea {
             border: 1.5px solid var(--secondary);
             border-radius: 6px;
@@ -170,7 +212,6 @@
             outline: none;
             background: #f0f8ff;
         }
-        /* Para los errores */
         .errorlist {
             color: var(--tertiary);
             font-size: 0.97rem;
@@ -186,29 +227,50 @@
         </div>
         <div class="barra-superior-title">TECKNOSFERA</div>
     </div>
+    <!-- MENU LATERAL DESPLEGABLE CON ANIMACIÓN -->
     <div class="sidebar">
-        <div>
-            <div class="menu-title"><i class="fas fa-user-shield"></i> Administración</div>
-            <div class="menu-list">
+        <div class="menu-section">
+            <div class="menu-dropdown"><i class="fas fa-user-shield"></i> Administración</div>
+            <div class="dropdown-list menu-list">
                 <a href="/admin/"><i class="fas fa-tools"></i> Panel Admin</a>
             </div>
-            <div class="menu-title"><i class="fas fa-shopping-cart"></i> Compras</div>
-            <div class="menu-list">
+        </div>
+        <div class="menu-section">
+            <div class="menu-dropdown"><i class="fas fa-shopping-cart"></i> Compras</div>
+            <div class="dropdown-list menu-list">
                 <a href="/compras/"><i class="fas fa-list"></i> Ver Compras</a>
                 <a href="/producto/agregar/"><i class="fas fa-plus"></i> Agregar Compra</a>
             </div>
-            <div class="menu-title"><i class="fas fa-cash-register"></i> Ventas</div>
-            <div class="menu-list">
+        </div>
+        <div class="menu-section">
+            <div class="menu-dropdown"><i class="fas fa-cash-register"></i> Ventas</div>
+            <div class="dropdown-list menu-list">
                 <a href="/ventas/"><i class="fas fa-list"></i> Ver Ventas</a>
                 <a href="/ventas/agregar/"><i class="fas fa-plus"></i> Agregar Venta</a>
             </div>
-            <div class="menu-title"><i class="fas fa-boxes"></i> Inventario</div>
-            <div class="menu-list">
+        </div>
+        <div class="menu-section">
+            <div class="menu-dropdown"><i class="fas fa-boxes"></i> Inventario</div>
+            <div class="dropdown-list menu-list">
                 <a href="/inventario/"><i class="fas fa-list"></i> Ver Inventario</a>
-                <a href="{% url 'agregar_producto' %}"><i class="fas fa-plus"></i> Agregar Producto</a>
             </div>
-            <div class="menu-title"><i class="fas fa-chart-bar"></i> Estadísticas</div>
-            <div class="menu-list">
+        </div>
+        <div class="menu-section">
+            <div class="menu-dropdown"><i class="fas fa-box"></i> Productos</div>
+            <div class="dropdown-list menu-list">
+                <a href="{% url 'agregar_producto' %}"><i class="fas fa-plus"></i> Agregar</a>
+            </div>
+        </div>
+        <div class="menu-section">
+            <div class="menu-dropdown"><i class="fas fa-truck"></i> Proveedores</div>
+            <div class="dropdown-list menu-list">
+                <a href="{% url 'agregar_proveedor' %}"><i class="fas fa-plus"></i> Agregar</a>
+                <a href="{% url 'lista_eliminar_proveedor' %}"><i class="fas fa-trash"></i> Eliminar</a>
+            </div>
+        </div>
+        <div class="menu-section">
+            <div class="menu-dropdown"><i class="fas fa-chart-bar"></i> Estadísticas</div>
+            <div class="dropdown-list menu-list">
                 <a href="/estadisticas/"><i class="fas fa-list"></i> Ver Estadísticas</a>
             </div>
         </div>
@@ -222,5 +284,14 @@
     <footer>
         <p style="color:var(--paragraph);">by Néstor Enríquez C.</p>
     </footer>
+    <script>
+        // Menú desplegable SOLO al CLICK con animación
+        document.querySelectorAll('.menu-dropdown').forEach(function(drop){
+            drop.addEventListener('click', function(){
+                var section = this.parentElement;
+                section.classList.toggle('open');
+            });
+        });
+    </script>
 </body>
 </html>
