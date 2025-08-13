@@ -1,16 +1,15 @@
 from django.db import models
 from django.utils import timezone
 
-
 # Create your models here.
+#-----------------------------------------------------------------------------------------------------------------------
 # Clase Categoria
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100)
 
     def __str__(self):
         return self.nombre
-
-
+#-----------------------------------------------------------------------------------------------------------------------
 # Clase Producto
 class Producto(models.Model):
     nombre = models.CharField(max_length=150)
@@ -30,8 +29,7 @@ class Producto(models.Model):
 
     def __str__(self):
         return self.nombre
-
-
+#-----------------------------------------------------------------------------------------------------------------------
 # Clase Proveedor
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=150)
@@ -46,7 +44,6 @@ class Proveedor(models.Model):
     rubro = models.CharField(max_length=100, blank=True)
     creado_en = models.DateTimeField(default=timezone.now)
 
-
-
     def __str__(self):
         return self.nombre
+#-----------------------------------------------------------------------------------------------------------------------

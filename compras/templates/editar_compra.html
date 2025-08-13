@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<style>
+    <!-- ventana blanca centrada en la pagina, con esquinas redondeadas fondos suaves, sombra y borde -->
+    .main-window {
+        display: block;
+        margin: 36px auto 0 auto;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 18px rgba(44,62,80,0.09);
+        border: 1px solid #dfe6e9;
+        min-width: 400px;
+        max-width: 470px;
+        width: fit-content;
+        overflow-x: auto;
+    }
+    <!-- header de la ventana, con fondo rojo, texto blanco, padding y borde inferior -->
+    .main-window-header {
+        background: #ef4565;
+        color: #fff;
+        font-size: 1.24rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        padding: 13px 26px;
+        text-align: left;
+        border-bottom: 1px solid #dfe6e9;
+        border-radius: 10px 10px 0 0;
+        min-width: 400px;
+        display: flex;
+        align-items: center;
+    }
+    <!-- cuerpo de la ventana, con padding, texto centrado y min-width -->
+    .main-window-body {
+        padding: 24px 22px 18px 22px;
+        font-size: 1rem;
+        min-width: 400px;
+        text-align: center;
+    }
+    <!-- mensaje de advertencia para eliminar, con color rojo claro, fondo suave, borde y padding -->
+    .delete-warning {
+        color: #b71c1c;
+        background: #fff5f5;
+        border: 1px solid #ef4565;
+        padding: 18px 10px 14px 10px;
+        border-radius: 8px;
+        margin-bottom: 18px;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    <!-- boton de eliminar, con fondo degradado rojo, texto blanco, padding, borde red
+    .main-window-body button[type="submit"] {
+        padding: 8px 0;
+        background: linear-gradient(90deg,#ef4565 60%, #b71c1c 100%);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.07rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        margin-top: 8px;
+        margin-bottom: 0;
+        box-shadow: 0 1px 7px #b2bec3;
+        width: 100%;
+        letter-spacing: 0.5px;
+    }
+    <!-- boton de eliminar al pasar el mouse, con fondo degradado rojo claro, texto blanco, sombra -->
+    .main-window-body button[type="submit"]:hover {
+        background: linear-gradient(90deg,#b71c1c 0%, #ef4565 100%);
+        color: #fff;
+        box-shadow: 0 2px 10px #ef4565;
+    }
+    <!-- enlace de cancelar, con color azul claro, texto centrado, sin subrayado, padding y hover -->
+    .main-window-body .cancel-link {
+        display: block;
+        text-align: center;
+        margin: 12px auto 0 auto;
+        font-size: 1rem;
+        color: #0984e3;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+    <!-- enlace de cancelar al pasar el mouse, con color rojo claro, subrayado -->
+    .main-window-body .cancel-link:hover {
+        color: #ef4565;
+        text-decoration: underline;
+    }
+    <!-- media query para pantallas pequeñas, ajustando el ancho de la ventana -->
+    @media (max-width: 700px) {
+        .main-window-header, .main-window-body, .main-window { min-width: 99vw; max-width: 99vw; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-window">
+    <div class="main-window-header">
+        Eliminar compra
+    </div>
+    <div class="main-window-body">
+        <div class="delete-warning">
+            ¿Estás seguro que deseas eliminar la compra
+            {% if compra.id %} <b>#{{ compra.id }}</b>{% endif %}
+            {% if compra.producto %} de <b>{{ compra.producto.nombre }}</b>{% endif %}
+            {% if compra.cliente %} para <b>{{ compra.cliente.nombre }}</b>{% endif %}?
+            <br><br>
+            <span style="font-size:0.97rem; color:#5f6c7b;">
+                Esta acción no se puede deshacer.
+            </span>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Eliminar compra</button>
+        </form>
+        <a href="{% url 'compras:ver_compras' %}" class="cancel-link">Cancelar</a>
+    </div>
+</div>
+{% endblock %}
