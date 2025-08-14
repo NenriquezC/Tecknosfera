@@ -334,14 +334,16 @@
                     <a href="{% url 'compras:agregar_compra' %}"><i class="fa fa-plus"></i> Hacer compra</a>
                     <a href="{% url 'compras:seleccionar_editar_compra' %}"><i class="fa fa-edit"></i> Editar compra</a>
                     <a href="{% url 'compras:seleccionar_eliminar_compra' %}"><i class="fa fa-trash"></i> Eliminar compra</a>
-                    <a href="{% url 'compras:ver_compras' %}"><i class="fa fa-calendar-day"></i> Ver compras del día</a>
+                    <a href="{% url 'compras:ver_compras' %}"><i class="fa fa-calendar-day"></i> Ver compras</a>
                 </div>
             </li>
             <li>
                 <a href="#"><i class="fas fa-cash-register"></i> Ventas <i class="fa fa-caret-down"></i></a>
                 <div class="submenu">
                     <a href="/ventas/hacer/"><i class="fa fa-plus"></i> Hacer venta</a>
-                    <a href="/ventas/dia/"><i class="fa fa-calendar-day"></i> Ver ventas del día</a>
+                    <a href="{% url 'compras:seleccionar_editar_compra' %}"><i class="fa fa-edit"></i> Editar venta</a>
+                    <a href="{% url 'compras:seleccionar_eliminar_compra' %}"><i class="fa fa-trash"></i> Eliminar venta</a>
+                    <a href="/ventas/dia/"><i class="fa fa-calendar-day"></i> Ver ventas</a>
                 </div>
             </li>
             <li>
@@ -367,8 +369,8 @@
                 <a href="#"><i class="fas fa-chart-bar"></i> Estadísticas <i class="fa fa-caret-down"></i></a>
                 <div class="submenu">
                     <a href="/estadisticas/dashboard/"><i class="fa fa-tachometer-alt"></i> Dashboard</a>
-                    <a href="/estadisticas/ventas-dia/"><i class="fa fa-calendar-day"></i> Ventas del día</a>
-                    <a href="/estadisticas/ventas-mes/"><i class="fa fa-calendar-alt"></i> Ventas del mes</a>
+                    <a href="/estadisticas/ventas-dia/"><i class="fa fa-calendar-day"></i> Ventas</a>
+                    <a href="/estadisticas/ventas-dia/"><i class="fa fa-calendar-day"></i> Compras</a>
                     <a href="/estadisticas/ganancias/"><i class="fa fa-dollar-sign"></i> Ganancias</a>
                     <a href="/estadisticas/graficas/"><i class="fa fa-chart-line"></i> Gráficas</a>
                 </div>

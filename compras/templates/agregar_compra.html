@@ -160,14 +160,32 @@
     <div class="main-window-body">
         <form method="post" class="form-horizontal" id="compra-form">
             {% csrf_token %}
-            {% for field in form %}
+
+            <!-- Select personalizado para producto con opción de agregar producto nuevo -->
             <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.errors %}
-                    <div class="errorlist">{{ field.errors }}</div>
+                <label for="id_producto">Producto</label>
+                <select name="producto" id="id_producto" required>
+                    {% for producto in productos %}
+                        <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                    {% endfor %}
+                    <option value="nuevo">-- Agregar producto nuevo --</option>
+                </select>
+                {% if form.producto.errors %}
+                    <div class="errorlist">{{ form.producto.errors }}</div>
                 {% endif %}
             </div>
+
+            <!-- Renderiza los demás campos excepto "producto" -->
+            {% for field in form %}
+                {% if field.name != "producto" %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="errorlist">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
             {% endfor %}
             <button type="submit">Guardar</button>
         </form>
@@ -200,6 +218,15 @@
         const precioUnitarioInput = document.getElementById('id_precio_unitario');
         const cantidadInput = document.getElementById('id_cantidad');
         const totalInput = document.getElementById('id_total');
+
+        // Redirección si eligen "nuevo"
+        if (productoSelect) {
+            productoSelect.addEventListener('change', function() {
+                if (productoSelect.value === 'nuevo') {
+                    window.location.href = "{% url 'agregar_producto' %}?next={{ request.path }}";
+                }
+            });
+        }
 
         function actualizarPrecio() {
             const prodId = productoSelect.value;

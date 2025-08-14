@@ -55,7 +55,7 @@ def editar_compra(request, compra_id):
         # form = CompraForm(instance=compra)
         pass
     # return render(request, 'compras/editar_compra.html', {'form': form, 'compra': compra})
-    return render(request, 'compras/editar_compra.html', {'compra': compra})  # Solo para que no falle
+    return render(request, 'editar_compra.html', {'compra': compra})  # Solo para que no falle
 #-----------------------------------------------------------------------------------------------------------------------
 def eliminar_compra(request, compra_id):
     """ :param request:

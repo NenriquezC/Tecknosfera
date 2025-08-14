@@ -47,10 +47,10 @@ def inventario(request):
         "productos_alerta": productos_alerta,
     })
 #-----------------------------------------------------------------------------------------------------------------------
-def agregar_producto(request):
-    """ :param request:
+"""def agregar_producto(request):
+     :param request:
         :return: render con el formulario para agregar un producto
-    """
+    
     if request.method == 'POST':
         form = ProductoForm(request.POST)
         if form.is_valid():
@@ -58,7 +58,24 @@ def agregar_producto(request):
             return redirect('inventario')  # Vuelve a la página inventario
     else:
         form = ProductoForm()
+    return render(request, 'agregar_producto.html', {'form': form})"""
+def agregar_producto(request):
+    if request.method == 'POST':
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Si viene de compras, redirige de vuelta
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect('listar_productos')  # O donde tú quieras
+    else:
+        form = ProductoForm()
     return render(request, 'agregar_producto.html', {'form': form})
+
+
+
+
 #-----------------------------------------------------------------------------------------------------------------------
 def seleccionar_editar_producto(request):
     """ :param request:
