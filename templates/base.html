@@ -340,10 +340,10 @@
             <li>
                 <a href="#"><i class="fas fa-cash-register"></i> Ventas <i class="fa fa-caret-down"></i></a>
                 <div class="submenu">
-                    <a href="/ventas/hacer/"><i class="fa fa-plus"></i> Hacer venta</a>
-                    <a href="{% url 'compras:seleccionar_editar_compra' %}"><i class="fa fa-edit"></i> Editar venta</a>
-                    <a href="{% url 'compras:seleccionar_eliminar_compra' %}"><i class="fa fa-trash"></i> Eliminar venta</a>
-                    <a href="/ventas/dia/"><i class="fa fa-calendar-day"></i> Ver ventas</a>
+                    <a href="{% url 'ventas:agregar_venta' %}"><i class="fa fa-plus"></i> Hacer venta</a>
+                    <a href="{% url 'ventas:seleccionar_editar_venta' %}"><i class="fa fa-edit"></i> Editar venta</a>
+                    <a href="{% url 'ventas:seleccionar_eliminar_venta' %}"><i class="fa fa-trash"></i> Eliminar venta</a>
+                    <a href="{% url 'ventas:ver_ventas' %}"><i class="fa fa-calendar-day"></i> Ver ventas</a>
                 </div>
             </li>
             <li>
@@ -395,7 +395,7 @@
         </main>
     </div>
     <footer>
-        <p style="color:var(--paragraph);">by Néstor Enríquez C.</p>
+        <p style="color:var(--paragraph);">by NenriquezC.</p>
     </footer>
     {% block scripts %}{% endblock %}
 </body>

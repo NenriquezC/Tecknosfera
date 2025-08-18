@@ -11,7 +11,7 @@ def agregar_compra(request):
     :param request:
     :return: '/compras/agregar/?exito=1'
     """
-    if request.method == 'POST':
+    if request.method == 'POST': # Verifica si el método de la solicitud es POST
         form = CompraForm(request.POST)
         if form.is_valid():
             compra = form.save(commit=False)  # No guarda aún en la base de datos
@@ -73,10 +73,10 @@ def seleccionar_editar_compra(request):
     """ :param request:
         :return: render con las compras para seleccionar y editar
     """
-    compras = Compra.objects.all()
-    buscar = request.GET.get("buscar")
-    if buscar:
-        compras = compras.filter(
+    compras = Compra.objects.all() # Obtiene todas las compras
+    buscar = request.GET.get("buscar") # Obtiene el parámetro de búsqueda de la URL
+    if buscar: # Si hay un término de búsqueda
+        compras = compras.filter( # Filtra las compras por el nombre del producto, nombre del cliente o ID
             producto__nombre__icontains=buscar
         ) | compras.filter(
             cliente__nombre__icontains=buscar

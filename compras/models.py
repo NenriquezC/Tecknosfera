@@ -21,7 +21,7 @@ class Compra(models.Model):
 
     # Este método __str__ es para que cuando imprimas una instancia de Compra, te muestre el nombre del producto.
     def __str__(self):
-        if self.producto and hasattr(self.producto, "nombre"):
+        if self.producto: # and  hasattr(self.producto, "nombre"):
             return str(self.producto.nombre)
         else:
             return "Sin producto"
