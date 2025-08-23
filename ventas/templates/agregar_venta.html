@@ -164,9 +164,9 @@
             <!-- Select personalizado para producto con opción de agregar producto nuevo -->
             <div class="form-group">
                 <label for="id_producto">Producto</label>
-                <select name="producto" id="id_producto" required>
+                <select name="producto" id="id_producto" required> <!--cada opcion traiga el precio de venta como atributo-->
                     {% for producto in productos %}
-                        <option value="{{ producto.id }}">{{ producto.nombre }}</option>
+                        <option value="{{ producto.id }}" data-precio-venta="{{ producto.precio_venta|floatformat:2 }}">{{ producto.nombre }}</option> <!--El campo producto.precio_venta debe venir desde la vista, calculado con:precio_venta = precio_compra * (1 + ganancia/100)-->
                     {% endfor %}
                     <option value="nuevo">-- Agregar producto nuevo --</option>
                 </select>
@@ -174,10 +174,14 @@
                     <div class="errorlist">{{ form.producto.errors }}</div>
                 {% endif %}
             </div>
-
-            <!-- Renderiza los demás campos excepto "producto" -->
+            <!-- Campo personalizado para Precio unitario (readonly y se autocompleta con JS) -->
+            <div class="form-group">
+                <label for="id_precio_unitario">Precio unitario</label>
+                <input type="text" id="id_precio_unitario" name="precio_unitario" readonly style="background: #eef6fa; color: #222;">
+            </div>
+            <!-- Renderiza los demás campos excepto "producto" y "precio_unitario" -->
             {% for field in form %}
-                {% if field.name != "producto" %}
+                {% if field.name != "producto" and field.name != "precio_unitario" %}
                 <div class="form-group">
                     {{ field.label_tag }}
                     {{ field }}
@@ -205,54 +209,26 @@
 {% endif %}
 
 <script>
-    // Diccionario de precios de productos desde Django
-    const productos = {
-        {% for producto in productos %}
-            "{{ producto.id }}": {{ producto.precio }},
-        {% endfor %}
-    };
+document.addEventListener('DOMContentLoaded', function() {
+    const productoSelect = document.getElementById('id_producto');
+    const precioUnitarioInput = document.getElementById('id_precio_unitario');
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Selecciona los elementos del formulario
-        const productoSelect = document.getElementById('id_producto');
-        const precioUnitarioInput = document.getElementById('id_precio_unitario');
-        const cantidadInput = document.getElementById('id_cantidad');
-        const totalInput = document.getElementById('id_total');
+    function actualizarPrecioUnitario() {
+        const selectedOption = productoSelect.options[productoSelect.selectedIndex];
+        const precioVenta = selectedOption.getAttribute('data-precio-venta');
+        precioUnitarioInput.value = precioVenta ? parseFloat(precioVenta).toFixed(2) : '';
+    }
 
-        // Redirección si eligen "nuevo"
-        if (productoSelect) {
-            productoSelect.addEventListener('change', function() {
-                if (productoSelect.value === 'nuevo') {
-                    window.location.href = "{% url 'agregar_producto' %}?next={{ request.path }}";
-                }
-            });
+    productoSelect.addEventListener('change', function() {
+        if (productoSelect.value === 'nuevo') {
+            window.location.href = "{% url 'agregar_producto' %}?next={{ request.path }}";
+        } else {
+            actualizarPrecioUnitario();
         }
-
-        function actualizarPrecio() {
-            const prodId = productoSelect.value;
-            if (productos[prodId] !== undefined) {
-                precioUnitarioInput.value = productos[prodId];
-                calcularTotal();
-            } else {
-                precioUnitarioInput.value = '';
-                totalInput.value = '';
-            }
-        }
-
-        function calcularTotal() {
-            const cantidad = parseInt(cantidadInput.value) || 0;
-            const precio = parseFloat(precioUnitarioInput.value) || 0;
-            totalInput.value = (cantidad * precio).toFixed(2);
-        }
-
-        if (productoSelect && precioUnitarioInput) {
-            productoSelect.addEventListener('change', actualizarPrecio);
-        }
-        if (cantidadInput && totalInput) {
-            cantidadInput.addEventListener('input', calcularTotal);
-        }
-        // Inicializa el precio y total al cargar la página
-        actualizarPrecio();
     });
+
+    // Inicializa al cargar la página
+    actualizarPrecioUnitario();
+});
 </script>
 {% endblock %}

@@ -2,7 +2,7 @@
 from .models import Producto, Proveedor
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ProductoForm, ProveedorForm # Debes tener un form para Producto
-
+from django.contrib import messages
 
 # Create your views here.
 #-----------------------------------------------------------------------------------------------------------------------
@@ -59,7 +59,8 @@ def inventario(request):
     else:
         form = ProductoForm()
     return render(request, 'agregar_producto.html', {'form': form})"""
-def agregar_producto(request):
+
+"""def agregar_producto(request):
     if request.method == 'POST':
         form = ProductoForm(request.POST)
         if form.is_valid():
@@ -71,9 +72,21 @@ def agregar_producto(request):
             return redirect('listar_productos')  # O donde tú quieras
     else:
         form = ProductoForm()
+    return render(request, 'agregar_producto.html', {'form': form})"""
+
+def agregar_producto(request):
+    if request.method == 'POST':
+        form = ProductoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, '¡Producto agregado exitosamente! ¿Deseas agregar otro producto?')
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect('agregar_producto')  # Redirige a sí misma para limpiar el form
+    else:
+        form = ProductoForm()
     return render(request, 'agregar_producto.html', {'form': form})
-
-
 
 
 #-----------------------------------------------------------------------------------------------------------------------

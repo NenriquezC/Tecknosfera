@@ -175,9 +175,10 @@
                 {% endif %}
             </div>
 
-            <!-- Renderiza los demás campos excepto "producto" -->
+
+            <!-- Renderiza los demás campos excepto "producto" y "ganancia" -->
             {% for field in form %}
-                {% if field.name != "producto" %}
+                {% if field.name != "producto" and field.name != "ganancia" %}
                 <div class="form-group">
                     {{ field.label_tag }}
                     {{ field }}
@@ -187,6 +188,22 @@
                 </div>
                 {% endif %}
             {% endfor %}
+
+            <!-- Campo ganancia (editable) -->
+            <div class="form-group">
+                <label for="id_ganancia">Ganancia (%)</label>
+                {{ form.ganancia }}
+                {% if form.ganancia.errors %}
+                    <div class="errorlist">{{ form.ganancia.errors }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Precio de venta (solo lectura, calculado en JS) -->
+            <div class="form-group">
+                <label for="precio_venta_preview">Precio de venta</label>
+                <input type="text" id="precio_venta_preview" readonly style="background: #eef6fa; color: #222;">
+            </div>
+
             <button type="submit">Guardar</button>
         </form>
     </div>
@@ -194,7 +211,7 @@
 
 {# Modal de éxito y pregunta para agregar otra compra #}
 {% if request.GET.exito %}
-<div id="exitoModal">
+<div id="exitoModal" class="modal">
     <div class="modal-content">
         <h2>¡Compra registrada!</h2>
         <p>¿Deseas agregar otra compra?</p>
@@ -205,54 +222,86 @@
 {% endif %}
 
 <script>
-    // Diccionario de precios de productos desde Django
-    const productos = {
-        {% for producto in productos %}
-            "{{ producto.id }}": {{ producto.precio }},
-        {% endfor %}
-    };
+    // Diccionario de precios de productos desde Django, Permite acceder rápidamente al precio de cualquier producto en el frontend, sin hacer consultas adicionales al servidor.
+const productos = {
+    {% for producto in productos %}
+        "{{ producto.id }}": {{ producto.precio }},
+    {% endfor %}
+};
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Selecciona los elementos del formulario
-        const productoSelect = document.getElementById('id_producto');
-        const precioUnitarioInput = document.getElementById('id_precio_unitario');
-        const cantidadInput = document.getElementById('id_cantidad');
-        const totalInput = document.getElementById('id_total');
+document.addEventListener('DOMContentLoaded', function() {
+    // Selecciona los elementos del formulario Busca y almacena referencias a campos del formulario mediante sus IDs: selección de producto, precio unitario, cantidad, total, ganancia y una previsualización del precio de venta.
+    const productoSelect = document.getElementById('id_producto');
+    const precioUnitarioInput = document.getElementById('id_precio_unitario');
+    const cantidadInput = document.getElementById('id_cantidad');
+    const totalInput = document.getElementById('id_total');
+    const gananciaInput = document.getElementById('id_ganancia');
+    const precioVentaPreview = document.getElementById('precio_venta_preview');
 
-        // Redirección si eligen "nuevo"
-        if (productoSelect) {
-            productoSelect.addEventListener('change', function() {
-                if (productoSelect.value === 'nuevo') {
-                    window.location.href = "{% url 'agregar_producto' %}?next={{ request.path }}";
-                }
-            });
-        }
-
-        function actualizarPrecio() {
-            const prodId = productoSelect.value;
-            if (productos[prodId] !== undefined) {
-                precioUnitarioInput.value = productos[prodId];
-                calcularTotal();
-            } else {
-                precioUnitarioInput.value = '';
-                totalInput.value = '';
+    // Redirección si eligen "nuevo"
+    if (productoSelect) {
+        productoSelect.addEventListener('change', function() {
+            if (productoSelect.value === 'nuevo') {
+                window.location.href = "{% url 'agregar_producto' %}?next={{ request.path }}";
             }
-        }
+        });
+    }
 
-        function calcularTotal() {
-            const cantidad = parseInt(cantidadInput.value) || 0;
-            const precio = parseFloat(precioUnitarioInput.value) || 0;
+    function actualizarPrecio() {
+        const prodId = productoSelect.value;
+        if (productos[prodId] !== undefined) {
+            precioUnitarioInput.value = productos[prodId];
+            calcularTotal();
+            calcularPrecioVenta();
+        } else {
+            precioUnitarioInput.value = '';
+            totalInput.value = '';
+            precioVentaPreview.value = '';
+        }
+    }
+
+    function calcularTotal() {
+        const precio = parseFloat(precioUnitarioInput.value) || 0;
+        const cantidad = parseFloat(cantidadInput.value) || 0;
+        if (totalInput) {
             totalInput.value = (cantidad * precio).toFixed(2);
         }
+    }
 
-        if (productoSelect && precioUnitarioInput) {
-            productoSelect.addEventListener('change', actualizarPrecio);
+    function calcularPrecioVenta() {
+        const precioCompra = parseFloat(precioUnitarioInput.value) || 0;
+        const porcentaje = parseFloat(gananciaInput.value) || 0;
+        const precioVenta = precioCompra * (1 + porcentaje / 100);
+        if (!isNaN(precioVenta) && precioVenta > 0) {
+            if (precioVentaPreview) {
+                precioVentaPreview.value = precioVenta.toFixed(2);
+            }
+        } else {
+            if (precioVentaPreview) {
+                precioVentaPreview.value = '';
+            }
         }
-        if (cantidadInput && totalInput) {
-            cantidadInput.addEventListener('input', calcularTotal);
-        }
-        // Inicializa el precio y total al cargar la página
-        actualizarPrecio();
-    });
+    }
+
+
+    // Listeners para interactuar correctamente
+    if (productoSelect && precioUnitarioInput) {
+        productoSelect.addEventListener('change', actualizarPrecio);
+    }
+    if (cantidadInput && totalInput) {
+        cantidadInput.addEventListener('input', calcularTotal);
+    }
+    if (precioUnitarioInput && totalInput) {
+        precioUnitarioInput.addEventListener('input', calcularTotal);
+    }
+    if (gananciaInput && precioUnitarioInput) {
+        gananciaInput.addEventListener('input', calcularPrecioVenta);
+        precioUnitarioInput.addEventListener('input', calcularPrecioVenta);
+    }
+
+    // Inicializa el precio, total y precio de venta al cargar la página
+    actualizarPrecio();
+    calcularPrecioVenta();
+});
 </script>
 {% endblock %}

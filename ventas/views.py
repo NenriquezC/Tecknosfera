@@ -29,6 +29,7 @@ def agregar_venta(request):
     else:
         form = VentaForm() # Si el método no es POST, crea un formulario vacío
     productos = Producto.objects.all() # Obtiene todos los productos disponibles
+
     return render(request, 'agregar_venta.html', {'form': form, 'productos': productos})
     # Renderiza la plantilla con el formulario y los productos disponibles
 
